@@ -78,9 +78,9 @@ make CC=$CC install INSTALLTOP=$DEST OPENSSLDIR=$DEST/ssl
 ########## ##################################################################
 
 mkdir $SRC/sqlite && cd $SRC/sqlite
-$WGET http://sqlite.org/2014/sqlite-autoconf-3080500.tar.gz
-tar zxvf sqlite-autoconf-3080500.tar.gz
-cd sqlite-autoconf-3080500
+$WGET http://sqlite.org/2014/sqlite-autoconf-3080600.tar.gz
+tar zxvf sqlite-autoconf-3080600.tar.gz
+cd sqlite-autoconf-3080600
 
 CC=$CC \
 CXX=$CXX \
@@ -135,9 +135,9 @@ make install DESTDIR=$BASE
 ######### ###################################################################
 
 mkdir $SRC/aria2 && cd $SRC/aria2
-$WGET http://downloads.sourceforge.net/project/aria2/stable/aria2-1.18.7/aria2-1.18.7.tar.gz
-tar zxvf aria2-1.18.7.tar.gz
-cd aria2-1.18.7
+$WGET http://downloads.sourceforge.net/project/aria2/stable/aria2-1.18.8/aria2-1.18.8.tar.gz
+tar zxvf aria2-1.18.8.tar.gz
+cd aria2-1.18.8
 
 CC=$CC \
 CXX=$CXX \
