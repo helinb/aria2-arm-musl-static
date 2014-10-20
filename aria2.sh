@@ -41,9 +41,9 @@ make install DESTDIR=$BASE
 ########### #################################################################
 
 mkdir -p $SRC/openssl && cd $SRC/openssl
-$WGET http://www.openssl.org/source/openssl-1.0.1i.tar.gz
-tar zxvf openssl-1.0.1i.tar.gz
-cd openssl-1.0.1i
+$WGET http://www.openssl.org/source/openssl-1.0.1j.tar.gz
+tar zxvf openssl-1.0.1j.tar.gz
+cd openssl-1.0.1j
 
 cat << "EOF" > openssl-musl.patch
 --- a/crypto/ui/ui_openssl.c    2013-09-08 11:00:10.130572803 +0200
@@ -78,9 +78,9 @@ make CC=$CC install INSTALLTOP=$DEST OPENSSLDIR=$DEST/ssl
 ########## ##################################################################
 
 mkdir $SRC/sqlite && cd $SRC/sqlite
-$WGET http://sqlite.org/2014/sqlite-autoconf-3080600.tar.gz
-tar zxvf sqlite-autoconf-3080600.tar.gz
-cd sqlite-autoconf-3080600
+$WGET http://sqlite.org/2014/sqlite-autoconf-3080700.tar.gz
+tar zxvf sqlite-autoconf-3080700.tar.gz
+cd sqlite-autoconf-3080700
 
 CC=$CC \
 CXX=$CXX \
@@ -96,9 +96,9 @@ make install DESTDIR=$BASE
 ########### #################################################################
 
 mkdir $SRC/libxml2 && cd $SRC/libxml2
-$WGET ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz
-tar zxvf libxml2-2.9.1.tar.gz
-cd libxml2-2.9.1
+$WGET ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
+tar zxvf libxml2-2.9.2.tar.gz
+cd libxml2-2.9.2
 
 patch < $PATCHES/libxml2-pthread.patch
 
@@ -107,9 +107,10 @@ CXX=$CXX \
 LDFLAGS=$LDFLAGS \
 CPPFLAGS=$CPPFLAGS \
 $CONFIGURE \
+--with-zlib=$DEST \
 --without-python
 
-$MAKE
+$MAKE LIBS="-lz"
 make install DESTDIR=$BASE
 
 ########## ##################################################################
