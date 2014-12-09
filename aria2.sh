@@ -78,9 +78,9 @@ make CC=$CC install INSTALLTOP=$DEST OPENSSLDIR=$DEST/ssl
 ########## ##################################################################
 
 mkdir $SRC/sqlite && cd $SRC/sqlite
-$WGET http://sqlite.org/2014/sqlite-autoconf-3080700.tar.gz
-tar zxvf sqlite-autoconf-3080700.tar.gz
-cd sqlite-autoconf-3080700
+$WGET http://sqlite.org/2014/sqlite-autoconf-3080704.tar.gz
+tar zxvf sqlite-autoconf-3080704.tar.gz
+cd sqlite-autoconf-3080704
 
 CC=$CC \
 CXX=$CXX \
