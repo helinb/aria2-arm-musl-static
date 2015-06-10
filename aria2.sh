@@ -13,6 +13,8 @@ CC=arm-linux-musleabi-gcc
 CXX=arm-linux-musleabi-g++
 LDFLAGS="-L$DEST/lib"
 CPPFLAGS="-I$DEST/include"
+CFLAGS="-march=armv7-a -mtune=cortex-a9"
+CXXFLAGS=$CFLAGS
 MAKE="make -j`nproc`"
 CONFIGURE="./configure --prefix=/opt --host=arm-linux"
 PATCHES=$(readlink -f $(dirname ${BASH_SOURCE[0]}))/patches
@@ -29,6 +31,8 @@ cd zlib-1.2.8
 
 LDFLAGS=$LDFLAGS \
 CPPFLAGS=$CPPFLAGS \
+CFLAGS=$CFLAGS \
+CXXFLAGS=$CXXFLAGS \
 CROSS_PREFIX=arm-linux-musleabi- \
 ./configure \
 --prefix=/opt
@@ -41,30 +45,11 @@ make install DESTDIR=$BASE
 ########### #################################################################
 
 mkdir -p $SRC/openssl && cd $SRC/openssl
-$WGET http://www.openssl.org/source/openssl-1.0.1j.tar.gz
-tar zxvf openssl-1.0.1j.tar.gz
-cd openssl-1.0.1j
+$WGET https://www.openssl.org/source/openssl-1.0.2a.tar.gz
+tar zxvf openssl-1.0.2a.tar.gz
+cd openssl-1.0.2a
 
-cat << "EOF" > openssl-musl.patch
---- a/crypto/ui/ui_openssl.c    2013-09-08 11:00:10.130572803 +0200
-+++ b/crypto/ui/ui_openssl.c    2013-09-08 11:29:35.806580447 +0200
-@@ -190,9 +190,9 @@
- # undef  SGTTY
- #endif
-
--#if defined(linux) && !defined(TERMIO)
--# undef  TERMIOS
--# define TERMIO
-+#if defined(linux)
-+# define TERMIOS
-+# undef  TERMIO
- # undef  SGTTY
- #endif
-EOF
-
-patch -p1 < openssl-musl.patch
-
-./Configure linux-armv4 \
+./Configure linux-armv4 $CFLAGS \
 --prefix=/opt shared zlib zlib-dynamic \
 -D_GNU_SOURCE -D_BSD_SOURCE \
 --with-zlib-lib=$DEST/lib \
@@ -78,14 +63,16 @@ make CC=$CC install INSTALLTOP=$DEST OPENSSLDIR=$DEST/ssl
 ########## ##################################################################
 
 mkdir $SRC/sqlite && cd $SRC/sqlite
-$WGET http://sqlite.org/2014/sqlite-autoconf-3080704.tar.gz
-tar zxvf sqlite-autoconf-3080704.tar.gz
-cd sqlite-autoconf-3080704
+$WGET https://www.sqlite.org/2015/sqlite-autoconf-3081002.tar.gz --no-check-certificate
+tar zxvf sqlite-autoconf-3081002.tar.gz
+cd sqlite-autoconf-3081002
 
 CC=$CC \
 CXX=$CXX \
 LDFLAGS=$LDFLAGS \
 CPPFLAGS=$CPPFLAGS \
+CFLAGS=$CFLAGS \
+CXXFLAGS=$CXXFLAGS \
 $CONFIGURE
 
 $MAKE
@@ -106,6 +93,8 @@ CC=$CC \
 CXX=$CXX \
 LDFLAGS=$LDFLAGS \
 CPPFLAGS=$CPPFLAGS \
+CFLAGS=$CFLAGS \
+CXXFLAGS=$CXXFLAGS \
 $CONFIGURE \
 --with-zlib=$DEST \
 --without-python
@@ -124,11 +113,33 @@ cd c-ares-1.10.0
 
 CC=$CC \
 CXX=$CXX \
-CPPFLAGS=$CPPFLAGS \
 LDFLAGS=$LDFLAGS \
+CPPFLAGS=$CPPFLAGS \
+CFLAGS=$CFLAGS \
+CXXFLAGS=$CXXFLAGS \
 $CONFIGURE
 
 $MAKE
+make install DESTDIR=$BASE
+
+########### #################################################################
+# LIBSSH2 # #################################################################
+########### #################################################################
+
+mkdir $SRC/libssh2 && cd $SRC/libssh2
+$WGET http://www.libssh2.org/download/libssh2-1.5.0.tar.gz
+tar zxvf libssh2-1.5.0.tar.gz
+cd libssh2-1.5.0
+
+CC=$CC \
+CXX=$CXX \
+LDFLAGS=$LDFLAGS \
+CPPFLAGS=$CPPFLAGS \
+CFLAGS=$CFLAGS \
+CXXFLAGS=$CXXFLAGS \
+$CONFIGURE
+
+$MAKE LIBS="-lz -lssl -lcrypto"
 make install DESTDIR=$BASE
 
 ######### ###################################################################
@@ -136,16 +147,20 @@ make install DESTDIR=$BASE
 ######### ###################################################################
 
 mkdir $SRC/aria2 && cd $SRC/aria2
-$WGET http://downloads.sourceforge.net/project/aria2/stable/aria2-1.18.8/aria2-1.18.8.tar.gz
-tar zxvf aria2-1.18.8.tar.gz
-cd aria2-1.18.8
+$WGET http://sourceforge.net/projects/aria2/files/stable/aria2-1.19.0/aria2-1.19.0.tar.gz
+tar zxvf aria2-1.19.0.tar.gz
+cd aria2-1.19.0
 
 CC=$CC \
 CXX=$CXX \
 LDFLAGS=$LDFLAGS \
 CPPFLAGS=$CPPFLAGS \
+CFLAGS=$CFLAGS \
+CXXFLAGS=$CXXFLAGS \
 $CONFIGURE \
 --enable-libaria2 \
+--enable-static \
+--disable-shared \
 --without-libuv \
 --without-appletls \
 --without-gnutls \
@@ -162,9 +177,10 @@ SQLITE3_CFLAGS="-I$DEST/include" \
 SQLITE3_LIBS="-L$DEST/lib" \
 LIBCARES_CFLAGS="-I$DEST/include" \
 LIBCARES_LIBS="-L$DEST/lib" \
+LIBSSH2_CFLAGS="-I$DEST/include" \
+LIBSSH2_LIBS="-L$DEST/lib" \
 ARIA2_STATIC=yes
 
-$MAKE \
-LIBS="-static -lz -lssl -lcrypto -lsqlite3 -lxml2 -lcares"
+$MAKE LIBS="-lz -lssl -lcrypto -lsqlite3 -lcares -lxml2 -lssh2"
 
 make install DESTDIR=$BASE/aria2
