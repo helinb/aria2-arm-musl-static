@@ -45,9 +45,9 @@ make install DESTDIR=$BASE
 ########### #################################################################
 
 mkdir -p $SRC/openssl && cd $SRC/openssl
-$WGET https://www.openssl.org/source/openssl-1.0.2a.tar.gz
-tar zxvf openssl-1.0.2a.tar.gz
-cd openssl-1.0.2a
+$WGET https://www.openssl.org/source/openssl-1.0.2d.tar.gz
+tar zxvf openssl-1.0.2d.tar.gz
+cd openssl-1.0.2d
 
 ./Configure linux-armv4 $CFLAGS \
 --prefix=/opt shared zlib zlib-dynamic \
@@ -63,9 +63,9 @@ make CC=$CC install INSTALLTOP=$DEST OPENSSLDIR=$DEST/ssl
 ########## ##################################################################
 
 mkdir $SRC/sqlite && cd $SRC/sqlite
-$WGET https://www.sqlite.org/2015/sqlite-autoconf-3081002.tar.gz --no-check-certificate
-tar zxvf sqlite-autoconf-3081002.tar.gz
-cd sqlite-autoconf-3081002
+$WGET  https://www.sqlite.org/2015/sqlite-autoconf-3081101.tar.gz --no-check-certificate
+tar zxvf sqlite-autoconf-3081101.tar.gz
+cd sqlite-autoconf-3081101
 
 CC=$CC \
 CXX=$CXX \
