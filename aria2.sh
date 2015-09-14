@@ -45,11 +45,11 @@ make install DESTDIR=$BASE
 ########### #################################################################
 
 mkdir -p $SRC/openssl && cd $SRC/openssl
-$WGET https://www.openssl.org/source/openssl-1.0.2a.tar.gz
-tar zxvf openssl-1.0.2a.tar.gz
-cd openssl-1.0.2a
+$WGET https://www.openssl.org/source/	openssl-1.0.2d.tar.gz
+tar zxvf 	openssl-1.0.2d.tar.gz
+cd openssl-1.0.2d
 
-./Configure linux-armv4 $CFLAGS \
+./Configure fips linux-armv4 $CFLAGS \
 --prefix=/opt shared zlib zlib-dynamic \
 -D_GNU_SOURCE -D_BSD_SOURCE \
 --with-zlib-lib=$DEST/lib \
